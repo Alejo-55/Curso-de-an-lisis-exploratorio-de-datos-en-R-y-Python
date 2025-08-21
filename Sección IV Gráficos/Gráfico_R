@@ -1,0 +1,311 @@
+library(gapminder)
+library(tidyverse)
+library(RColorBrewer)
+library(plotrix)
+
+data("gapminder")
+
+# Ver cuántas veces aparece cada continenete en la respectiva variable
+length(gapminder$continent[gapminder$continent == "Africa"])
+length(gapminder$continent[gapminder$continent == "Asia"])
+length(gapminder$continent[gapminder$continent == "Americas"])
+length(gapminder$continent[gapminder$continent == "Europe"])
+length(gapminder$continent[gapminder$continent == "Oceania"])
+
+
+# Gráfico de pie o básico
+Observaciones = c(624, 396, 300, 360, 24)
+Continentes = c("Africa", "Asia", "Americas", "Europa", "Oceania")
+pie(Observaciones, labels = Continentes)
+
+# Poniendo los porcentajes
+Observaciones = c(624, 396, 300, 360, 24)
+Continentes = c("Africa", "Asia", "Americas", "Europa", "Oceania")
+pie(Observaciones, labels = paste0(Continentes, "", Observaciones), col = color)
+pie(Observaciones, labels = paste0(Continentes, "", Observaciones), col = 1:6 )
+
+color <- brewer.pal(length(Observaciones), "Set2") 
+pie(Observaciones, labels = paste0(Continentes, "", Observaciones), col = color)
+#####################################################################################################################
+## Gráfico más estético
+
+# Datos
+Observaciones <- c(624, 396, 300, 360, 24)
+Continentes <- c("África", "Asia", "Américas", "Europa", "Oceanía")
+
+# Paleta de colores profesional (escala moderna)
+colores <- c("#1F77B4", "#FF7F0E", "#2CA02C", "#D62728", "#9467BD")  # Colorblind-friendly
+
+# Configuración gráfica avanzada
+par(
+  mar = c(0.5, 0.5, 2, 0.5),  # Márgenes mínimos
+  family = "sans",            # Fuente limpia (Arial/Helvetica)
+  bg = "white"                # Fondo blanco
+)
+
+# Gráfico de pastel con efectos de sombreado
+pie(
+  Observaciones,
+  labels = NA,  # Omitir etiquetas iniciales (las añadiremos después)
+  col = colores,
+  border = "white",
+  lwd = 1.5,    # Grosor del borde
+  init.angle = 90,
+  clockwise = TRUE,
+  main = "",    # El título lo añadiremos después con más control
+  edges = 200   # Suavizado del círculo
+)
+
+# Título elegante con sombra
+title(
+  main = "Distribución de Observaciones por Continente",
+  cex.main = 1.5,
+  font.main = 2,
+  col.main = "#333333",
+  line = 0.5
+)
+
+# Etiquetas profesionales con sombra
+etiquetas <- paste0(
+  Continentes, "\n", 
+  scales::comma(Observaciones), " (", 
+  round(Observaciones / sum(Observaciones) * 100, 1), "%)"
+)
+
+# Añadir etiquetas con posición inteligente
+text(
+  x = 0.9 * cos(seq(0, 2 * pi, length.out = 6)[-6] + 0.1),
+  y = 0.9 * sin(seq(0, 2 * pi, length.out = 6)[-6] + 0.1),
+  labels = etiquetas,
+  col = "#333333",
+  font = 2,
+  cex = 0.9
+)
+
+# Leyenda estilo minimalista
+legend(
+  "topright",
+  legend = etiquetas,
+  fill = colores,
+  bty = "n",
+  border = NA,
+  cex = 0.8,
+  x.intersp = 0.8,
+  y.intersp = 1.2,
+  text.font = 1,
+  text.col = "#555555"
+)
+
+# Añadir línea decorativa alrededor
+symbols(0, 0, circles = 1, add = TRUE, inches = FALSE, lwd = 0.5, fg = "#CCCCCC")
+
+######################################################################################################################
+# Con  la librería plotrix
+
+color <- brewer.pal(length(Observaciones), "Set2" )
+pie3D(Observaciones, labels = paste0(Continentes, "", Observaciones), col = color)
+
+######################################################################################
+# Con estética mejorada
+# Instalar y cargar paquetes (si no los tienes)
+if (!require("plotrix")) install.packages("plotrix")
+if (!require("RColorBrewer")) install.packages("RColorBrewer")
+library(plotrix)
+library(RColorBrewer)
+
+# Datos
+Observaciones <- c(624, 396, 300, 360, 24)
+Continentes <- c("África", "Asia", "Américas", "Europa", "Oceanía")
+
+# Paleta de colores profesional (Set2 de RColorBrewer + ajustes)
+color <- brewer.pal(length(Observaciones), "Set2")  # Paleta suave y accesible
+color <- adjustcolor(color, alpha.f = 0.9)  # Transparencia ligera para estilo moderno
+
+# Configuración gráfica avanzada
+par(
+  mar = c(2, 2, 3, 2),  # Márgenes ajustados
+  family = "sans",      # Fuente limpia
+  bg = "white"          # Fondo blanco
+)
+
+# Gráfico 3D mejorado
+pie3D(
+  Observaciones,
+  labels = paste0(Continentes, "\n", Observaciones, " (", round(Observaciones/sum(Observaciones)*100, 1), "%)"),
+  col = color,
+  border = "white",
+  explode = 0.1,        # Separación entre segmentos
+  theta = 0.8,          # Ángulo de perspectiva (0.8 para un 3D suave)
+  start = 1.5,          # Rotación inicial (en radianes)
+  height = 0.1,         # Altura del efecto 3D (más bajo = más elegante)
+  shade = 0.6,          # Sombreado realista (0.6 para balance)
+  labelcex = 0.9,       # Tamaño de etiquetas
+  labelcol = "#333333", # Color de texto oscuro para legibilidad
+  main = ""             # El título lo añadiremos después
+)
+
+# Título profesional con sombra
+title(
+  main = "Distribución de Observaciones por Continente (3D)",
+  cex.main = 1.4,
+  font.main = 2,
+  col.main = "#2C3E50",
+  line = 0.5
+)
+
+# Leyenda opcional (para gráficos con muchos segmentos)
+legend(
+  "topright",
+  legend = paste0(Continentes, ": ", round(Observaciones/sum(Observaciones)*100, 1), "%"),
+  fill = color,
+  bty = "n",           # Sin caja
+  border = NA,
+  cex = 0.8,
+  x.intersp = 0.8
+)
+
+##########################################################################################################################
+######################### Gráfico de barra ##########################################################################
+############################################################################################################################
+
+plot(gapminder$continent) # Gráfico sencillo
+
+plot(x = gapminder$continent, main = "Número de observaciones por continente",
+     xlab = "Continente", 
+     ylab = Observaciones,
+     col = c("royalblue", "seagreen", "purple", "gray")
+     )
+###########################################################################################################
+# Gráfico mejorado
+# Cargar librerías (si no están instaladas)
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("dplyr")) install.packages("dplyr")
+library(ggplot2)
+library(dplyr)
+
+# Preparar los datos
+datos_grafico <- gapminder %>%
+  count(continent) %>%
+  mutate(continent = factor(continent, 
+                            levels = continent[order(n, decreasing = TRUE)]))
+
+# Crear el gráfico profesional
+ggplot(datos_grafico, aes(x = continent, y = n, fill = continent)) +
+  geom_bar(stat = "identity", width = 0.7, color = "white", alpha = 0.9) +
+  geom_text(aes(label = n), vjust = -0.5, size = 4, color = "#333333") +
+  scale_fill_manual(values = c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F")) +
+  labs(title = "Número de observaciones por continente",
+       subtitle = "Datos del conjunto gapminder",
+       x = "Continente",
+       y = "Número de observaciones",
+       caption = "Fuente: Gapminder Foundation") +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "gray50"),
+    axis.title = element_text(face = "bold"),
+    axis.text = element_text(color = "#333333"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    legend.position = "none",
+    plot.caption = element_text(color = "gray50", size = 9)
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
+
+#####################################################################################################################
+# Otro punto
+Observaciones <- c(396, 624, 360, 300, 24) 
+Continentes <- c("Asia","África","Europe","Américas", "Oceanía") 
+barplot(height = Observaciones, names = Continentes, col = c("red", "green", "white",
+                                                             "blue"))
+# Gráfico de barra horizontal
+Observaciones <- c(396, 624, 360, 300, 24) 
+Continentes <- c("Asia","África","Europe","Américas", "Oceanía") 
+barplot(height = Observaciones, names = Continentes, col = c("red", "green", "white",
+                                                             "blue"), horiz = 1, las = 1)
+
+######################################################################################################
+# Gráfico más estético
+# Datos
+Observaciones <- c(396, 624, 360, 300, 24) 
+Continentes <- c("Asia", "África", "Europa", "Américas", "Oceanía")
+
+# Configuración de parámetros gráficos
+par(
+  mar = c(4, 6, 4, 2) + 0.1,  # Márgenes aumentados (abajo, izquierda, arriba, derecha)
+  family = "sans",            # Fuente sans-serif
+  bg = "white"                # Fondo blanco
+)
+
+# Paleta de colores profesional
+colores <- c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F")
+
+# Crear gráfico de barras horizontales mejorado
+bp <- barplot(
+  height = Observaciones,
+  names.arg = Continentes,
+  col = colores,
+  border = "white",          # Bordes blancos
+  horiz = TRUE,
+  las = 1,                   # Etiquetas horizontales
+  xlim = c(0, max(Observaciones) * 1.1),  # 10% más de espacio
+  axes = FALSE,              # Desactivar ejes automáticos
+  cex.names = 0.9,           # Tamaño de las etiquetas
+  space = 0.5                # Espacio entre barras
+)
+
+# Añadir valores en las barras
+text(
+  x = Observaciones + max(Observaciones)*0.03,  # Posición del texto
+  y = bp,
+  labels = paste0(Observaciones, " (", round(Observaciones/sum(Observaciones)*100, 1), "%)"),
+  pos = 4,                   # Alineación a la derecha
+  cex = 0.9,
+  col = "#333333"             # Color de texto oscuro
+)
+
+# Eje X personalizado
+axis(
+  1,                         # Eje inferior (X)
+  at = seq(0, max(Observaciones), length.out = 6),
+  col = "gray70",
+  col.axis = "#333333",
+  cex.axis = 0.9,
+  padj = -0.5                # Ajuste vertical de las etiquetas
+)
+
+# Título y etiquetas
+title(
+  main = "Número de Observaciones por Continente",
+  cex.main = 1.3,
+  font.main = 2,
+  col.main = "#2C3E50",
+  line = 2.5
+)
+
+mtext(
+  "Cantidad total de observaciones",
+  side = 1,                  # Eje X
+  line = 2.5,
+  cex = 0.9,
+  col = "#333333"
+)
+
+# Línea de grid sutil
+abline(
+  v = seq(0, max(Observaciones), length.out = 6),
+  col = "gray90",
+  lty = "dotted"
+)
+
+# Leyenda opcional (si se necesitan más detalles)
+legend(
+  "topright",
+  legend = paste0(Continentes, ": ", round(Observaciones/sum(Observaciones)*100, 1), "%"),
+  fill = colores,
+  border = NA,
+  bty = "n",                 # Sin caja
+  cex = 0.8,
+  x.intersp = 0.8,
+  text.col = "#555555"
+)
