@@ -1,0 +1,21 @@
+library(dplyr)
+library(gapminder)
+
+data("gapminder")
+df1 <- gapminder[c(1:1000), c("country", "year", "continent", "lifeExp")]
+head(df1)
+
+df2  <- gapminder[c(1:1000), c("country", "year", "pop", "gdpPercap")]
+head(df2)
+
+# Se inicia con la union inner
+
+df_inner <- merge(x = df1, y = df2, by = c("country", "year"))
+head(df_inner)
+dim(df_inner)
+
+## Full join
+
+df_outer <- merge(x = df1, y = df2, all = TRUE)
+head(df_outer)
+dim(df_outer)
